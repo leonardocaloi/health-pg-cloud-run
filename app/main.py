@@ -59,7 +59,7 @@ def execute_query():
     try:
         db = connect_unix_socket()
         with db.connect() as connection:
-            result = connection.execute(text(query))
+            result = connection.execute(sqlalchemy.sql.text(query))
             # Fetch all rows
             data = result.fetchall()
             # Convert list of RowProxy elements to list of dicts
