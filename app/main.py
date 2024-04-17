@@ -64,7 +64,7 @@ def execute_query():
         with db.connect() as connection:
             result = connection.execute(sqlalchemy.sql.text(query))
             data = result.fetchall()
-            result_list = [{column: value for column, value in row.items()} for row in data]
+            result_list = [{column.key: value for column, value in row.items()} for row in data]
             return jsonify(result_list), 200
     except Exception as e:
         return jsonify({"status": "failure", "message": str(e)}), 500
