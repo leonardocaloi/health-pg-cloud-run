@@ -7,23 +7,23 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/ventros-ai/health-pg:${_BRANCH_NAME}-${_TAG_NAME}']
 
-# 3. Implantar no Cloud Run (com ambiente dinâmico)
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: gcloud
-  args: 
-  - 'run'
-  - 'deploy'
-  - 'health-pg-${_BRANCH_NAME}' # Nome do serviço dinâmico
-  - '--image'
-  - 'gcr.io/ventros-ai/health-pg:${_BRANCH_NAME}-${_TAG_NAME}'
-  - '--region'
-  - 'us-central1'
-  - '--platform'
-  - 'managed'
-  - '--port'
-  - '80'
-  - '--set-env-vars' # Definir variáveis de ambiente
-  - 'ENV=${_BRANCH_NAME}' # Variável de ambiente com o nome da branch
+# # 3. Implantar no Cloud Run (com ambiente dinâmico)
+# - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#   entrypoint: gcloud
+#   args: 
+#   - 'run'
+#   - 'deploy'
+#   - 'health-pg-${_BRANCH_NAME}' # Nome do serviço dinâmico
+#   - '--image'
+#   - 'gcr.io/ventros-ai/health-pg:${_BRANCH_NAME}-${_TAG_NAME}'
+#   - '--region'
+#   - 'us-central1'
+#   - '--platform'
+#   - 'managed'
+#   - '--port'
+#   - '80'
+#   - '--set-env-vars' # Definir variáveis de ambiente
+#   - 'ENV=${_BRANCH_NAME}' # Variável de ambiente com o nome da branch
 
-images:
-- gcr.io/ventros-ai/health-pg:${_BRANCH_NAME}-${_TAG_NAME}
+# images:
+# - gcr.io/ventros-ai/health-pg:${_BRANCH_NAME}-${_TAG_NAME}
