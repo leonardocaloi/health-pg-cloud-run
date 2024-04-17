@@ -1,7 +1,7 @@
 steps:
 # 1. Construir a imagem Docker
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/ventros-ai/health-pg', './app']
+  args: ['build', '-f', 'Dockerfile', '-t', 'gcr.io/ventros-ai/health-pg', './app']
 
 # 2. Enviar a imagem para o Container Registry
 - name: 'gcr.io/cloud-builders/docker'
