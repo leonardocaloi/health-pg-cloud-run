@@ -2,8 +2,6 @@ from flask import Flask, jsonify
 import sqlalchemy
 import os
 
-# Carrega variáveis de ambiente de um arquivo .env na raiz do projeto
-load_dotenv()
 
 app = Flask(__name__)
 
