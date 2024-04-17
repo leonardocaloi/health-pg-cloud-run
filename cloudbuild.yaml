@@ -15,4 +15,5 @@ steps:
          '--platform', 'managed', 
          '--region', 'southamerica-east1', 
          '--allow-unauthenticated',
+         '--set-cloudsql-instances=ventros-ai:southamerica-east1:prod-ventros',
          '--set-env-vars', 'DB_USER=postgres,DB_PASSWORD=Omicron$4474,DB_NAME=postgres,CLOUD_SQL_CONNECTION_NAME=ventros-ai:southamerica-east1:prod-ventros']
