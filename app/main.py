@@ -9,37 +9,36 @@ load_dotenv()
 
 app = Flask(__name__)
 
-def init_unix_connection_engine():
-    # Configurações do pool de conexões do banco de dados
+logger = logging.getLogger()
+
+def init_db_connection():
     db_config = {
         'pool_size': 5,
         'max_overflow': 2,
-        'pool_timeout': 30,  # 30 segundos
-        'pool_recycle': 1800,  # 30 minutos
+        'pool_timeout': 30,
+        'pool_recycle': 1800,
     }
-    
-    # Nome da conexão da instância do Cloud SQL (é o que você encontra no Google Cloud Console)
-    instance_connection_name = os.getenv('CLOUD_SQL_CONNECTION_NAME')
+    return init_unix_connection_engine(db_config)
 
-    # Configurações para conectar com o Unix Socket fornecido pelo Google Cloud SQL
-    unix_socket = f'/cloudsql/{instance_connection_name}'
-    db_url = url.URL(
-        drivername="postgres+pg8000",
-        username=os.getenv('DB_USER'),
-        password=os.getenv('DB_PASS'),
-        database=os.getenv('DB_NAME'),
-        query={
-            'unix_sock': f"{unix_socket}/.s.PGSQL.5432"
-        }
+def init_unix_connection_engine(db_config):
+    pool = sqlalchemy.create_engine(
+        sqlalchemy.engine.url.URL(
+            drivername="postgres+pg8000",
+            username=os.environ.get('DB_USER'),
+            password=os.environ.get('DB_PASS'),
+            database=os.environ.get('DB_NAME'),
+            query={
+                'unix_sock': f"/cloudsql/{}/.s.PGSQL.5432".format(
+                os.environ.get('CLOUD_SQL_CONNECTION_NAME'),
+                )
+            }
+        ),
+        **db_config
     )
+    pool.dialect.description_encoding = None
+    return pool
 
-    # Cria uma engine de conexão ao banco com as configurações especificadas
-    engine = sqlalchemy.create_engine(db_url, **db_config)
-    engine.dialect.description_encoding = None
-    return engine
-
-# Inicializa a conexão com o banco de dados
-db = init_unix_connection_engine()
+db = init_db_connection()
 
 @app.route('/health')
 def health_check():
