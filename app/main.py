@@ -62,7 +62,7 @@ def execute_query():
     try:
         db = connect_unix_socket()
         with db.connect() as connection:
-            result = connection.execute(text(query))
+            result = connection.execute(sqlalchemy.sql.text(query))
             data = result.fetchall()
             result_list = [{column: value for column, value in row.items()} for row in data]
             return jsonify(result_list), 200
