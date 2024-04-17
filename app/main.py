@@ -28,7 +28,8 @@ engine = create_engine(database_uri)
 @app.route('/health')
 def health_check():
     try:
-        # Tentativa de conexão ao banco
+        app.logger.info("Unix Socket Path: %s", unix_socket)
+        app.logger.info("DATABASE_URI: %s", database_uri)
         with engine.connect() as connection:
             # Executa uma consulta simples para testar a conexão
             result = connection.execute("SELECT 1")
