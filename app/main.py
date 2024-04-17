@@ -1,44 +1,47 @@
 from flask import Flask, jsonify
+import sqlalchemy  # Importe o módulo completo
+from sqlalchemy.engine import url
 import os
 from dotenv import load_dotenv
-import sqlalchemy
-from sqlalchemy.engine import url
 
 # Carrega variáveis de ambiente de um arquivo .env na raiz do projeto
 load_dotenv()
 
 app = Flask(__name__)
 
-logger = logging.getLogger()
+def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
+    """Initializes a Unix socket connection pool for a Cloud SQL instance of Postgres."""
+    # Note: Saving credentials in environment variables is convenient, but not
+    # secure - consider a more secure solution such as
+    # Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
+    # keep secrets safe.
+    db_user = os.environ["DB_USER"]  # e.g. 'my-database-user'
+    db_pass = os.environ["DB_PASS"]  # e.g. 'my-database-password'
+    db_name = os.environ["DB_NAME"]  # e.g. 'my-database'
+    unix_socket_path = os.environ[
+        "INSTANCE_UNIX_SOCKET"
+    ]  # e.g. '/cloudsql/project:region:instance'
 
-def init_db_connection():
-    db_config = {
-        'pool_size': 5,
-        'max_overflow': 2,
-        'pool_timeout': 30,
-        'pool_recycle': 1800,
-    }
-    return init_unix_connection_engine(db_config)
-
-def init_unix_connection_engine(db_config):
     pool = sqlalchemy.create_engine(
-        sqlalchemy.engine.url.URL(
-            drivername="postgres+pg8000",
-            username=os.environ.get('DB_USER'),
-            password=os.environ.get('DB_PASS'),
-            database=os.environ.get('DB_NAME'),
-            query={
-                'unix_sock': f"/cloudsql/{}/.s.PGSQL.5432".format(
-                os.environ.get('CLOUD_SQL_CONNECTION_NAME'),
-                )
-            }
+        # Equivalent URL:
+        # postgresql+pg8000://<db_user>:<db_pass>@/<db_name>
+        #                         ?unix_sock=<INSTANCE_UNIX_SOCKET>/.s.PGSQL.5432
+        # Note: Some drivers require the `unix_sock` query parameter to use a different key.
+        # For example, 'psycopg2' uses the path set to `host` in order to connect successfully.
+        sqlalchemy.engine.url.URL.create(
+            drivername="postgresql+pg8000",
+            username=db_user,
+            password=db_pass,
+            database=db_name,
+            query={"unix_sock": f"{unix_socket_path}/.s.PGSQL.5432"},
         ),
-        **db_config
+        # ...
     )
-    pool.dialect.description_encoding = None
     return pool
 
-db = init_db_connection()
+
+db = connect_unix_socket()
+
 
 @app.route('/health')
 def health_check():
@@ -62,4 +65,4 @@ def get_env():
     return jsonify(env_vars)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 80)))
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
