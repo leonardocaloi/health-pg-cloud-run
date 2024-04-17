@@ -9,21 +9,21 @@ load_dotenv()
 app = Flask(__name__)
 
 # Nome da conexão da instância do Cloud SQL (é o que você encontra no Google Cloud Console)
-INSTANCE_CONNECTION_NAME = os.getenv('CLOUD_SQL_CONNECTION_NAME')
+instance_connection_name = os.getenv('CLOUD_SQL_CONNECTION_NAME')
 
 # Obtém as configurações de conexão do banco de dados das variáveis de ambiente
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_NAME = os.getenv("DB_NAME")
+db_user = os.getenv("DB_USER")
+db_password = os.getenv("DB_PASSWORD")
+db_name = os.getenv("DB_NAME")
 
 # Caminho do Unix socket fornecido pelo Google Cloud
-unix_socket = f'/cloudsql/{INSTANCE_CONNECTION_NAME}/.s.PGSQL.5432'
+unix_socket = f'/cloudsql/{instance_connection_name}/.s.PGSQL.5432'
 
 # Monta a URI de conexão ao banco
-DATABASE_URI = f'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}?host={unix_socket}'
+database_uri = f'postgresql+psycopg2://{db_user}:{db_password}@/{db_name}?host={unix_socket}'
 
 # Cria uma engine de conexão ao banco
-engine = create_engine(DATABASE_URI)
+engine = create_engine(database_uri)
 
 @app.route('/health')
 def health_check():
