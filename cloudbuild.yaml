@@ -1,11 +1,11 @@
 steps:
-# 1. Construir a imagem Docker
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-f', 'Dockerfile', '-t', 'gcr.io/ventros-ai/health-pg', '.']
+# # 1. Construir a imagem Docker
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: ['build', '-f', 'Dockerfile', '-t', 'gcr.io/ventros-ai/health-pg', '.']
 
-# 2. Enviar a imagem para o Container Registry
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/ventros-ai/health-pg']
+# # 2. Enviar a imagem para o Container Registry
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: ['push', 'gcr.io/ventros-ai/health-pg']
 
 # 3. Implantar no Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
