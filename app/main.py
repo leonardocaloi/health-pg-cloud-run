@@ -32,11 +32,13 @@ def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
 def hello_world():
     return 'Hello, World!'
 
+
 @app.route('/get_env')
 def get_env():
     # Capture all environment variables and their values
     env_vars = {key: os.getenv(key) for key in os.environ.keys()}
     return jsonify(env_vars)
+
 
 @app.route('/health')
 def health_check():
@@ -50,6 +52,7 @@ def health_check():
     except Exception as e:
         return jsonify({"status": "failure", "message": str(e)}), 500
 
+
 @app.route('/execute_query')
 def execute_query():
     query = request.args.get('query')
@@ -59,14 +62,13 @@ def execute_query():
     try:
         db = connect_unix_socket()
         with db.connect() as connection:
-            result = connection.execute(sqlalchemy.sql.text(query))
-            # Fetch all rows
+            result = connection.execute(text(query))
             data = result.fetchall()
-            # Convert list of RowProxy elements to list of dicts
-            result_list = [dict(row) for row in data]
+            result_list = [{column: value for column, value in row.items()} for row in data]
             return jsonify(result_list), 200
     except Exception as e:
         return jsonify({"status": "failure", "message": str(e)}), 500
+
 
 
 if __name__ == '__main__':
