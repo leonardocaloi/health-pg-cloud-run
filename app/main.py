@@ -30,7 +30,7 @@ def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    return 'Hello, Irgo!'
 
 
 @app.route('/get_env')
