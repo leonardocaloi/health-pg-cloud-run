@@ -41,7 +41,7 @@ def health_check():
     try:
         db = connect_unix_socket()
         with db.connect() as connection:
-            result = connection.execute("SELECT 1")
+            result = connection.execute(sqlalchemy.sql.text("SELECT 1"))
             data = result.fetchone()
             if data == (1,):
                 return jsonify({"status": "success", "message": "Database connection is healthy"}), 200
