@@ -46,6 +46,19 @@ def hello_world():
     # Simplesmente retorna uma resposta "Hello, World!"
     return 'Hello, World!'
 
+@app.route('/db_info')
+def db_info():
+    # Retorna informações sobre a configuração do banco de dados
+    db_config = {
+        "DB_USER": db_user,
+        "DB_PASSWORD": db_password,
+        "DB_NAME": db_name,
+        "CLOUD_SQL_CONNECTION_NAME": instance_connection_name,
+        "Unix Socket Path": unix_socket,
+        "DATABASE_URI": database_uri
+    }
+    return jsonify(db_config)
+
 @app.route('/get_env')
 def get_env():
     # Captura todas as variáveis de ambiente e seus valores
