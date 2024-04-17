@@ -38,21 +38,19 @@ def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
         # ...
     )
     return pool
+    
 
-
-# db = connect_unix_socket()
-
-
-# @app.route('/health')
-# def health_check():
-#     try:
-#         with db.connect() as connection:
-#             result = connection.execute("SELECT 1")
-#             data = result.fetchone()
-#             if data == (1,):
-#                 return jsonify({"status": "success", "message": "Database connection is healthy"}), 200
-#     except Exception as e:
-#         return jsonify({"status": "failure", "message": str(e)}), 500
+@app.route('/health')
+def health_check():
+    try:
+        db = connect_unix_socket()
+        with db.connect() as connection:
+            result = connection.execute("SELECT 1")
+            data = result.fetchone()
+            if data == (1,):
+                return jsonify({"status": "success", "message": "Database connection is healthy"}), 200
+    except Exception as e:
+        return jsonify({"status": "failure", "message": str(e)}), 500
 
 @app.route('/')
 def hello_world():
