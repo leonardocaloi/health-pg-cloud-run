@@ -1,8 +1,6 @@
 from flask import Flask, jsonify
-import sqlalchemy  # Importe o módulo completo
-from sqlalchemy.engine import url
+import sqlalchemy
 import os
-from dotenv import load_dotenv
 
 # Carrega variáveis de ambiente de um arquivo .env na raiz do projeto
 load_dotenv()
@@ -38,7 +36,7 @@ def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
         # ...
     )
     return pool
-    
+
 
 @app.route('/health')
 def health_check():
