@@ -16,6 +16,6 @@ steps:
          '--region', 'southamerica-east1', 
          '--allow-unauthenticated',
          '--set-cloudsql-instances=ventros-gcp:southamerica-east1:pg-prod',
-         '--set-secrets', 'DB_CREDENTIALS=CREDENTIALS_FLASK_HEALTH_CHECK_PG_SQL_PRO:latest',
+         '--set-secrets', 'DB_CREDENTIALS=CREDENTIALS_FLASK_HEALTH_CHECK_PG_SQL_PROD:latest',
          '--set-env-vars', 'ENV=test']
 
