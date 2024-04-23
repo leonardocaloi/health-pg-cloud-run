@@ -10,7 +10,7 @@ steps:
 # 3. Implantar no Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'gcloud'
-  args: ['run', 'deploy', 'health-pg', 
+  args: ['run', 'deploy', 'flask-health-pg',
          '--image', 'gcr.io/ventros-gcp/health-pg',
          '--platform', 'managed', 
          '--region', 'southamerica-east1', 
