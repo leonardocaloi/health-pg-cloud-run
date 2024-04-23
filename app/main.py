@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 import sqlalchemy
 import os
 
+from pip._vendor.rich import json
 
 app = Flask(__name__)
 
@@ -11,10 +12,11 @@ def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
     # secure - consider a more secure solution such as
     # Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
     # keep secrets safe.
-    db_user = os.environ["DB_USER"]  
-    db_pass = os.environ["DB_PASS"]  
-    db_name = os.environ["DB_NAME"]  
-    unix_socket_path = os.environ["INSTANCE_UNIX_SOCKET"]  # e.g. '/cloudsql/project:region:instance'
+    db_credentials = json.loads(os.environ['DB_CREDENTIALS'])
+    db_user = db_credentials["DB_USER"]
+    db_pass = db_credentials["DB_PASS"]
+    db_name = db_credentials["DB_NAME"]
+    unix_socket_path = db_credentials["INSTANCE_UNIX_SOCKET"]  # e.g. '/cloudsql/project:region:instance'
 
     pool = sqlalchemy.create_engine(
         sqlalchemy.engine.url.URL.create(

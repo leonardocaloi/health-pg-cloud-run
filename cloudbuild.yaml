@@ -16,4 +16,6 @@ steps:
          '--region', 'southamerica-east1', 
          '--allow-unauthenticated',
          '--set-cloudsql-instances=ventros-gcp:southamerica-east1:pg-prod',
-         '--set-env-vars', 'DB_USER=flask,DB_PASS=flask-password,DB_NAME=flask-health-test,INSTANCE_UNIX_SOCKET=/cloudsql/ventros-gcp:southamerica-east1:pg-prod']
+         '--set-secrets', 'CREDENTIALS_BACKEND_DB_PROD=CREDENTIALS_BACKEND_DB_PROD:1',
+         '--set-env-vars', 'DB_USER1=flask']
+#         '--set-env-vars', 'DB_USER=flask,DB_PASS=flask-password,DB_NAME=flask-health-test,INSTANCE_UNIX_SOCKET=/cloudsql/ventros-gcp:southamerica-east1:pg-prod']
