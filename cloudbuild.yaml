@@ -1,19 +1,19 @@
 steps:
 # 1. Construir a imagem Docker
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-f', 'Dockerfile', '-t', 'gcr.io/ventros-ai/health-pg', '.']
+  args: ['build', '-f', 'Dockerfile', '-t', 'gcr.io/ventros-gcp/health-pg', '.']
 
 # 2. Enviar a imagem para o Container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/ventros-ai/health-pg']
+  args: ['push', 'gcr.io/ventros-gcp/health-pg']
 
 # 3. Implantar no Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'gcloud'
   args: ['run', 'deploy', 'health-pg', 
-         '--image', 'gcr.io/ventros-ai/health-pg', 
+         '--image', 'gcr.io/ventros-gcp/health-pg',
          '--platform', 'managed', 
          '--region', 'southamerica-east1', 
          '--allow-unauthenticated',
-         '--set-cloudsql-instances=ventros-ai:southamerica-east1:prod-ventros',
-         '--set-env-vars', 'DB_USER=postgres,DB_PASS=Omicron$4474,DB_NAME=postgres,INSTANCE_UNIX_SOCKET=/cloudsql/ventros-ai:southamerica-east1:prod-ventros']
+         '--set-cloudsql-instances=ventros-gcp:southamerica-east1:pg-prod',
+         '--set-env-vars', 'DB_USER=flask,DB_PASS=flask-password,DB_NAME=flask-health-test,INSTANCE_UNIX_SOCKET=/cloudsql/ventros-gcp:southamerica-east1:pg-prod']
