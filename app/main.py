@@ -29,6 +29,29 @@ def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
 def hello_world():
     return 'Hello, Irgo!'
 
+@app.route('/print_db_credentials')
+def print_db_credentials():
+    try:
+        db_credentials = json.loads(os.environ['DB_CREDENTIALS'])
+        db_user = db_credentials["DB_USER"]
+        db_pass = db_credentials["DB_PASS"]
+        db_name = db_credentials["DB_NAME"]
+        unix_socket_path = db_credentials["INSTANCE_UNIX_SOCKET"]
+
+        # Agora incluindo os dados no retorno
+        return jsonify({
+            "status": "success",
+            "message": "Database credentials retrieved successfully.",
+            "DB_USER": db_user,
+            "DB_PASS": db_pass,
+            "DB_NAME": db_name,
+            "INSTANCE_UNIX_SOCKET": unix_socket_path
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "status": "failure",
+            "message": str(e)
+        }), 500
 
 @app.route('/get_env')
 def get_env():
