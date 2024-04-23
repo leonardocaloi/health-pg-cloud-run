@@ -22,7 +22,7 @@ steps:
     '--execution-environment=gen1',
     '--concurrency=90',
     '--max-instances=50',
-    '--memory=512MBi',
+    '--memory=512Mi',
     '--cpu=1',
     '--timeout=3600',
     '--port=3080'
