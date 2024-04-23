@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, request
 import sqlalchemy
 import os
-
-from pip._vendor.rich import json
+import json
 
 app = Flask(__name__)
 
@@ -41,56 +40,11 @@ def health_check():
     except Exception as e:
         return jsonify({"status": "failure", "message": str(e)}), 500
 
-
-@app.route('/print_db_credentials')
-def print_db_credentials():
-    try:
-        db_credentials = json.loads(os.environ['DB_CREDENTIALS'])
-        db_user = db_credentials["DB_USER"]
-        db_pass = db_credentials["DB_PASS"]
-        db_name = db_credentials["DB_NAME"]
-        unix_socket_path = db_credentials["INSTANCE_UNIX_SOCKET"]
-
-        # Agora incluindo os dados no retorno
-        return jsonify({
-            "status": "success",
-            "message": "Database credentials retrieved successfully.",
-            "DB_USER": db_user,
-            "DB_PASS": db_pass,
-            "DB_NAME": db_name,
-            "INSTANCE_UNIX_SOCKET": unix_socket_path
-        }), 200
-    except Exception as e:
-        return jsonify({
-            "status": "failure",
-            "message": str(e)
-        }), 500
-
 @app.route('/get_env')
 def get_env():
     # Capture all environment variables and their values
     env_vars = {key: os.getenv(key) for key in os.environ.keys()}
     return jsonify(env_vars)
-
-
-
-
-@app.route('/execute_query')
-def execute_query():
-    query = request.args.get('query')
-    if not query:
-        return jsonify({"status": "failure", "message": "No query provided"}), 400
-    
-    try:
-        db = connect_unix_socket()
-        with db.connect() as connection:
-            result = connection.execute(sqlalchemy.sql.text(query))
-            data = result.fetchall()
-            result_list = [{column.key: value for column, value in row.items()} for row in data]
-            return jsonify(result_list), 200
-    except Exception as e:
-        return jsonify({"status": "failure", "message": str(e)}), 500
-
 
 
 if __name__ == '__main__':

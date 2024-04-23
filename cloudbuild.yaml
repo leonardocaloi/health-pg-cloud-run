@@ -10,12 +10,31 @@ steps:
 # 3. Implantar no Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'gcloud'
-  args: ['run', 'deploy', 'flask-health-pg',
-         '--image', 'gcr.io/ventros-gcp/health-pg',
-         '--platform', 'managed', 
-         '--region', 'southamerica-east1', 
-         '--allow-unauthenticated',
-         '--set-cloudsql-instances=ventros-gcp:southamerica-east1:pg-prod',
-         '--set-secrets', 'DB_CREDENTIALS=CREDENTIALS_FLASK_HEALTH_CHECK_PG_SQL_PROD:latest',
-         '--set-env-vars', 'ENV=test']
+  args: [
+    'run', 'deploy', 'flask-health-pg',
+    '--image', 'gcr.io/ventros-gcp/health-pg',
+    '--platform', 'managed',
+    '--region', 'southamerica-east1',
+    '--allow-unauthenticated',
+    '--set-cloudsql-instances=ventros-gcp:southamerica-east1:pg-prod',
+    '--set-secrets', 'DB_CREDENTIALS=CREDENTIALS_FLASK_HEALTH_CHECK_PG_SQL_PROD:latest',
+    '--set-env-vars', 'ENV=test',
+    '--execution-environment=gen1',
+    '--concurrency=90',
+    '--max-instances=50',
+    '--memory=512MBi',
+    '--cpu=1',
+    '--timeout: 3600'
+        ]
 
+
+--image=gcr.io/ventros-gcp/health-pg@sha256:6f2a3aced3160bd15a4eff1e81e6b69d3740a9c0626658008952ce8da067a269 \
+--allow-unauthenticated \
+--port=8085 \
+--service-account=872506740646-compute@developer.gserviceaccount.com \
+--concurrency=90 \
+--timeout=3600 \
+--max-instances=80 \
+--execution-environment=gen1 \
+--region=us-central1 \
+--project=ventros-gcp
