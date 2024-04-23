@@ -2,7 +2,7 @@
 FROM python:3.9
 
 # Define uma variável de ambiente para a porta
-ENV PORT 80
+ENV PORT 3000
 
 # Atualiza o sistema e instala o pip
 RUN apt-get update -y && \

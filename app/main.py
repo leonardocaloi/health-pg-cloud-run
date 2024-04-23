@@ -46,6 +46,6 @@ def get_env():
     env_vars = {key: os.getenv(key) for key in os.environ.keys()}
     return jsonify(env_vars)
 
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 80)))
+#
+# if __name__ == '__main__':
+#     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 3000)))

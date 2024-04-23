@@ -24,17 +24,6 @@ steps:
     '--max-instances=50',
     '--memory=512MBi',
     '--cpu=1',
-    '--timeout: 3600'
+    '--timeout: 3600',
+    '--port=3080'
         ]
-
-
---image=gcr.io/ventros-gcp/health-pg@sha256:6f2a3aced3160bd15a4eff1e81e6b69d3740a9c0626658008952ce8da067a269 \
---allow-unauthenticated \
---port=8085 \
---service-account=872506740646-compute@developer.gserviceaccount.com \
---concurrency=90 \
---timeout=3600 \
---max-instances=80 \
---execution-environment=gen1 \
---region=us-central1 \
---project=ventros-gcp
