@@ -27,7 +27,7 @@ def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
 
 @app.route('/')
 def hello_world():
-    return 'Hello, Irgo!'
+    return 'Hello, World!'
 
 @app.route('/print_db_credentials')
 def print_db_credentials():
