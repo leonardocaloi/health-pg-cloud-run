@@ -6,6 +6,10 @@ from pip._vendor.rich import json
 
 app = Flask(__name__)
 
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
 def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
     db_credentials = json.loads(os.environ['DB_CREDENTIALS'])
     db_user = db_credentials["DB_USER"]
@@ -13,21 +17,30 @@ def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
     db_name = db_credentials["DB_NAME"]
     unix_socket_path = db_credentials["INSTANCE_UNIX_SOCKET"]
 
-    pool = sqlalchemy.create_engine(
+    # Create the database engine using the unix socket path directly in the URL
+    engine = sqlalchemy.create_engine(
         sqlalchemy.engine.url.URL.create(
             drivername="postgresql+pg8000",
             username=db_user,
             password=db_pass,
             database=db_name,
-            query={"unix_sock": f"{unix_socket_path}/.s.PGSQL.5432"},
-        ),
+            query={"unix_sock": f"{unix_socket_path}/.s.PGSQL.5432"}
+        )
     )
-    return pool
+    return engine
 
+@app.route('/health')
+def health_check():
+    try:
+        engine = connect_unix_socket()
+        with engine.connect() as connection:
+            result = connection.execute(sqlalchemy.sql.text("SELECT 1"))
+            data = result.fetchone()
+            if data == (1,):
+                return jsonify({"status": "success", "message": "Database connection is healthy"}), 200
+    except Exception as e:
+        return jsonify({"status": "failure", "message": str(e)}), 500
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
 
 @app.route('/print_db_credentials')
 def print_db_credentials():
@@ -60,17 +73,6 @@ def get_env():
     return jsonify(env_vars)
 
 
-@app.route('/health')
-def health_check():
-    try:
-        db = connect_unix_socket()
-        with db.connect() as connection:
-            result = connection.execute(sqlalchemy.sql.text("SELECT 1"))
-            data = result.fetchone()
-            if data == (1,):
-                return jsonify({"status": "success", "message": "Database connection is healthy"}), 200
-    except Exception as e:
-        return jsonify({"status": "failure", "message": str(e)}), 500
 
 
 @app.route('/execute_query')
