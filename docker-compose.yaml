@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  flask-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${HOST_PORT}:${PORT}"
+    environment:
+      - DB_CREDENTIALS=${DB_CREDENTIALS}
+      - ENV=${ENV}
+      - PORT=${PORT}
+    depends_on:
+      - cloud-sql-proxy
+    volumes:
+      - cloudsql:/cloudsql
+
+  cloud-sql-proxy:
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.10.1
+    command: ${CLOUDSQL_INSTANCE} --unix-socket /cloudsql --credentials-file /secrets/cloudsql/credentials.json
+    volumes:
+      - ${LOCAL_CREDENTIAL_PATH}:/secrets/cloudsql/credentials.json
+      - cloudsql:/cloudsql
+    restart: always
+
+volumes:
+  cloudsql:
