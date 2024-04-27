@@ -7,10 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${HOST_PORT}:${PORT}"
-    environment:
-      - DB_CREDENTIALS=${DB_CREDENTIALS}
-      - ENV=${ENV}
-      - PORT=${PORT}
+    env_file:
+      - .env
     depends_on:
       - cloud-sql-proxy
     volumes:
@@ -18,7 +16,18 @@ services:
 
   cloud-sql-proxy:
     image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.10.1
-    command: ${CLOUDSQL_INSTANCE} --unix-socket /cloudsql --credentials-file /secrets/cloudsql/credentials.json
+    command: ${CLOUDSQL_INSTANCE} --unix-socket /cloudsql --auto-iam-authn --credentials-file /secrets/cloudsql/credentials.json
+    volumes:
+      - ${LOCAL_CREDENTIAL_PATH}:/secrets/cloudsql/credentials.json
+      - cloudsql:/cloudsql
+    restart: always
+    user: root
+
+  cloud-sql-proxy2:
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.10.1
+    command: ${CLOUDSQL_INSTANCE} --address 0.0.0.0 --port 5432 --auto-iam-authn --credentials-file /secrets/cloudsql/credentials.json
+    ports:
+      - "5432:5432"
     volumes:
       - ${LOCAL_CREDENTIAL_PATH}:/secrets/cloudsql/credentials.json
       - cloudsql:/cloudsql

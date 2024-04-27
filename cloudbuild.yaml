@@ -11,14 +11,14 @@ steps:
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'gcloud'
   args: [
-    'run', 'deploy', 'flask-health-pg',
+    'run', 'deploy', 'flask-health-pg-2',
     '--image', 'gcr.io/ventros-gcp/health-pg',
     '--platform', 'managed',
     '--region', 'southamerica-east1',
     '--allow-unauthenticated',
     '--set-cloudsql-instances=ventros-gcp:southamerica-east1:pg-prod',
     '--set-secrets', 'DB_CREDENTIALS=CREDENTIALS_FLASK_HEALTH_CHECK_PG_SQL_PROD:latest',
-    '--set-env-vars', 'ENV=test',
+    '--set-env-vars', 'DB_USER=sql-proxy-leonardo@ventros-gcp.iam,DB_NAME=flask-health-test,DB_INSTANCE_UNIX_SOCKET=/cloudsql/ventros-gcp:southamerica-east1:pg-prod',
     '--execution-environment=gen1',
     '--concurrency=90',
     '--max-instances=50',
